@@ -124,7 +124,7 @@ namespace OAuth2.Client
 
         public async Task<string> GetCurrentTokenAsync(bool forceUpdate = false, CancellationToken cancellationToken = default)
         {
-            if (!forceUpdate && ExpiresAt != default && DateTime.Now < ExpiresAt && !String.IsNullOrEmpty(AccessToken))
+            if (!forceUpdate && ExpiresAt != default && DateTime.UtcNow < ExpiresAt && !String.IsNullOrEmpty(AccessToken))
             {
                 return AccessToken;
             }
