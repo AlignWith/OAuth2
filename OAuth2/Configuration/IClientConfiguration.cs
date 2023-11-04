@@ -36,6 +36,11 @@ namespace OAuth2.Configuration
         string Scope { get; set; }
 
         /// <summary>
+        /// Access type - offline or online.
+        /// </summary>
+        string AccessType { get; set; }
+
+        /// <summary>
         /// Redirect URI (URI user will be redirected to 
         /// after authentication using third-party service).
         /// </summary>

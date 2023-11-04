@@ -37,6 +37,11 @@
         public string Scope { get; set; }
 
         /// <summary>
+        /// Access type - offline or online.
+        /// </summary>
+        public string AccessType { get; set; }
+
+        /// <summary>
         /// Redirect URI (URI user will be redirected to
         /// after authentication using third-party service).
         /// </summary>

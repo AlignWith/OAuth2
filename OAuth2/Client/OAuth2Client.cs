@@ -85,27 +85,21 @@ namespace OAuth2.Client
         {
             var client = _factory.CreateClient(AccessCodeServiceEndpoint);
             var request = _factory.CreateRequest(AccessCodeServiceEndpoint);
-            if (String.IsNullOrEmpty(Configuration.Scope))
+            
+            request.AddObject(new
             {
-                request.AddObject(new
-                {
-                    response_type = "code",
-                    client_id = Configuration.ClientId,
-                    redirect_uri = Configuration.RedirectUri,
-                    state
-                });
-            }
-            else
-            {
-                request.AddObject(new
-                {
-                    response_type = "code",
-                    client_id = Configuration.ClientId,
-                    redirect_uri = Configuration.RedirectUri,
-                    scope = Configuration.Scope,
-                    state
-                });
-            }
+                response_type = "code",
+                client_id = Configuration.ClientId,
+                redirect_uri = Configuration.RedirectUri,
+                state
+            });
+
+            if (!String.IsNullOrEmpty(Configuration.Scope))
+                request.AddParameter("scope", Configuration.Scope, ParameterType.GetOrPost);
+
+            if (!String.IsNullOrEmpty(Configuration.AccessType))
+                request.AddParameter("access_type", Configuration.AccessType, ParameterType.GetOrPost);
+            
             return Task.FromResult(client.BuildUri(request).ToString());
         }
 
