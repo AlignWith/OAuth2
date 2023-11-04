@@ -114,7 +114,7 @@ namespace OAuth2.Client
         /// </summary>
         /// <param name="parameters">Callback request payload (parameters).</param>
         /// <param name="cancellationToken">Optional cancellation token</param>
-        public async Task<string> GetTokenAsync(NameValueCollection parameters, CancellationToken cancellationToken = default)
+        public async Task<string> GetTokenFromCodeAsync(NameValueCollection parameters, CancellationToken cancellationToken = default)
         {
             GrantType = "authorization_code";
             CheckErrorAndSetState(parameters);
@@ -122,7 +122,7 @@ namespace OAuth2.Client
             return AccessToken;
         }
 
-        public async Task<string> GetCurrentTokenAsync(string refreshToken = null, bool forceUpdate = false, CancellationToken cancellationToken = default)
+        public async Task<string> GetCurrentTokenAsync(bool forceUpdate = false, CancellationToken cancellationToken = default)
         {
             if (!forceUpdate && ExpiresAt != default && DateTime.Now < ExpiresAt && !String.IsNullOrEmpty(AccessToken))
             {
@@ -130,11 +130,7 @@ namespace OAuth2.Client
             }
 
             NameValueCollection parameters = new NameValueCollection();
-            if (!String.IsNullOrEmpty(refreshToken))
-            {
-                parameters.Add("refresh_token", refreshToken);
-            }
-            else if (!String.IsNullOrEmpty(RefreshToken))
+            if (!String.IsNullOrEmpty(RefreshToken))
             {
                 parameters.Add("refresh_token", RefreshToken);
             }
@@ -146,6 +142,14 @@ namespace OAuth2.Client
                 return AccessToken;
             }
             throw new Exception("Token never fetched and refresh token not provided.");
+        }
+
+        public void SetTokens(string accessToken, DateTime expiresAt, string refreshToken = null, string tokenType = null)
+        {
+            AccessToken = accessToken;
+            RefreshToken = refreshToken;
+            TokenType = tokenType;
+            ExpiresAt = expiresAt;
         }
 
         /// <summary>
@@ -213,7 +217,7 @@ namespace OAuth2.Client
             TokenType = ParseTokenResponse(response.Content, TokenTypeKey);
 
             if (Int32.TryParse(ParseTokenResponse(response.Content, ExpiresKey), out int expiresIn))
-                ExpiresAt = DateTime.Now.AddSeconds(expiresIn);
+                ExpiresAt = DateTime.UtcNow.AddSeconds(expiresIn);
         }
 
         protected virtual string ParseTokenResponse(string content, string key)
