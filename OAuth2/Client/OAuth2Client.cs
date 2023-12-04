@@ -58,7 +58,9 @@ namespace OAuth2.Client
         /// <summary>
         /// Seconds till the token expires returned by provider. Can be used for further calls of provider API.
         /// </summary>
-        public DateTime ExpiresAt { get; private set; }
+        public DateTime? ExpiresAt { get; private set; }
+
+        public string Raw { get; set; }
 
         private string GrantType { get; set; }
 
@@ -138,7 +140,7 @@ namespace OAuth2.Client
             throw new Exception("Token never fetched and refresh token not provided.");
         }
 
-        public void SetTokens(string accessToken, DateTime expiresAt, string refreshToken = null, string tokenType = null)
+        public void SetTokens(string accessToken, DateTime? expiresAt = null, string refreshToken = null, string tokenType = null)
         {
             AccessToken = accessToken;
             RefreshToken = refreshToken;
@@ -212,6 +214,8 @@ namespace OAuth2.Client
 
             if (Int32.TryParse(ParseTokenResponse(response.Content, ExpiresKey), out int expiresIn))
                 ExpiresAt = DateTime.UtcNow.AddSeconds(expiresIn);
+
+            Raw = response.Content;
         }
 
         protected virtual string ParseTokenResponse(string content, string key)
