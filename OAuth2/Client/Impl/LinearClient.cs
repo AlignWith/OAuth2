@@ -44,7 +44,7 @@ namespace OAuth2.Client.Impl
             {
                 return new Endpoint
                 {
-                    BaseUri = "https://linear.app",
+                    BaseUri = "https://api.linear.app",
                     Resource = "/oauth/token"
                 };
             }
