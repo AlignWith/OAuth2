@@ -82,8 +82,11 @@ namespace OAuth2.Client
         /// <param name="state">
         /// Any additional information that will be posted back by service.
         /// </param>
+        /// <param name="parameters">
+        /// Any additional parameters that is specific for concrete provider.
+        /// </param>
         /// <param name="cancellationToken"></param>
-        public virtual Task<string> GetLoginLinkUriAsync(string state = null, CancellationToken cancellationToken = default)
+        public virtual Task<string> GetLoginLinkUriAsync(string state = null, NameValueCollection parameters = null, CancellationToken cancellationToken = default)
         {
             var client = _factory.CreateClient(AccessCodeServiceEndpoint);
             var request = _factory.CreateRequest(AccessCodeServiceEndpoint);
@@ -101,6 +104,9 @@ namespace OAuth2.Client
 
             if (!String.IsNullOrEmpty(Configuration.AccessType))
                 request.AddParameter("access_type", Configuration.AccessType, ParameterType.GetOrPost);
+
+            if (parameters != null )
+                request.AddObject(parameters);
             
             return Task.FromResult(client.BuildUri(request).ToString());
         }
