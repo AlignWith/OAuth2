@@ -63,9 +63,10 @@ namespace OAuth2.Client
         /// You should use this URI when rendering login link.
         /// </summary>
         /// <param name="state">Any additional information needed by application.</param>
+        /// <param name="parameters">Any additional parameters needed by the concrete imlementation.</param>
         /// <param name="cancellationToken">Optional cancellation token</param>
         /// <returns>Login link URI.</returns>
-        public async Task<string> GetLoginLinkUriAsync(string state = null, CancellationToken cancellationToken = default)
+        public async Task<string> GetLoginLinkUriAsync(string state = null, NameValueCollection parameters = null, CancellationToken cancellationToken = default)
         {
             if (!state.IsEmpty())
             {
@@ -136,7 +137,8 @@ namespace OAuth2.Client
         /// Composes login link URI.
         /// </summary>
         /// <param name="state">Any additional information needed by application.</param>
-        private string GetLoginRequestUri(string state = null)
+        /// <param name="parameters">Any additional parameters needed by the concrete imlementation.</param>
+        private string GetLoginRequestUri(string state = null, NameValueCollection parameters = null)
         {
             var client = _factory.CreateClient(LoginServiceEndpoint);
             var request = _factory.CreateRequest(LoginServiceEndpoint);
@@ -145,6 +147,14 @@ namespace OAuth2.Client
             if (!state.IsEmpty())
             {
                 request.AddParameter("state", state);
+            }
+
+            if (parameters != null)
+            {
+                foreach (var key in parameters.AllKeys)
+                {
+                    request.AddParameter(key, parameters[key]);
+                }
             }
 
             return client.BuildUri(request).ToString();

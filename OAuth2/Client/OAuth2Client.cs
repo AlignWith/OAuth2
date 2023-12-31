@@ -105,8 +105,13 @@ namespace OAuth2.Client
             if (!String.IsNullOrEmpty(Configuration.AccessType))
                 request.AddParameter("access_type", Configuration.AccessType, ParameterType.GetOrPost);
 
-            if (parameters != null )
-                request.AddObject(parameters);
+            if (parameters != null)
+            {
+                foreach (var key in parameters.AllKeys)
+                {
+                    request.AddParameter(key, parameters[key], ParameterType.GetOrPost);
+                }
+            }
             
             return Task.FromResult(client.BuildUri(request).ToString());
         }

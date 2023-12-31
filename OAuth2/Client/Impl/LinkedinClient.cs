@@ -7,6 +7,7 @@ using OAuth2.Models;
 using RestSharp;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using System.Collections.Specialized;
 
 namespace OAuth2.Client.Impl
 {
@@ -70,9 +71,9 @@ namespace OAuth2.Client.Impl
             }
         }
 
-        public override Task<string> GetLoginLinkUriAsync(string state = null, CancellationToken cancellationToken = default)
+        public override Task<string> GetLoginLinkUriAsync(string state = null, NameValueCollection parameters = null, CancellationToken cancellationToken = default)
         {
-            return base.GetLoginLinkUriAsync(state ?? Guid.NewGuid().ToString("N"), cancellationToken);
+            return base.GetLoginLinkUriAsync(state ?? Guid.NewGuid().ToString("N"), parameters, cancellationToken);
         }
 
         protected override void BeforeGetUserInfo(BeforeAfterRequestArgs args)
